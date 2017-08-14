@@ -8,9 +8,30 @@ import java.util.List;
 public class Parser {
     private LinkedList<String> commands = new LinkedList<>();
 
+    private String filePath="D:\\Program Files\\nand2tetris\\projects\\08\\FunctionCalls\\FibonacciElement\\Sys.vm";
+
+    public Parser(String filePath) {
+        this.filePath = filePath;
+        try {
+            List<String> originCommands = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
+            originCommands.forEach(command -> {
+                if (command.indexOf("//") != -1) {
+                    command = command.substring(0, command.indexOf("//")).trim();
+                } else {
+                    command = command.trim();
+                }
+                if (command.length() > 0) {
+                    commands.add(command);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Parser() {
         try {
-            List<String> originCommands = Files.readAllLines(Paths.get("D:\\Program Files\\nand2tetris\\projects\\08\\ProgramFlow\\FibonacciSeries\\FibonacciSeries.vm"), StandardCharsets.UTF_8);
+            List<String> originCommands = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             originCommands.forEach(command -> {
                 if (command.indexOf("//") != -1) {
                     command = command.substring(0, command.indexOf("//")).trim();

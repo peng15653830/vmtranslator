@@ -41,43 +41,156 @@ public class CodeWriter {
         printWriter.println("D=A");
         printWriter.println("@SP");
         printWriter.println("M=D");
-        writeCall("Sys.init", 0);
     }
 
     public void writeCall(String functionName, int numArgs) {
-        printWriter.println("//call "+functionName);
-    }
+        printWriter.println("//call " + functionName);
+        printWriter.println("@return_"+functionName);
+        printWriter.println("D=A");
+        printWriter.println("@SP");
+        printWriter.println("A=M");
+        printWriter.println("M=D");
+        printWriter.println("@SP");
+        printWriter.println("M=M+1");
 
+        printWriter.println("@LCL");
+        printWriter.println("D=M");
+        printWriter.println("@SP");
+        printWriter.println("A=M");
+        printWriter.println("M=D");
+        printWriter.println("@SP");
+        printWriter.println("M=M+1");
+
+        printWriter.println("@ARG");
+        printWriter.println("D=M");
+        printWriter.println("@SP");
+        printWriter.println("A=M");
+        printWriter.println("M=D");
+        printWriter.println("@SP");
+        printWriter.println("M=M+1");
+
+        printWriter.println("@THIS");
+        printWriter.println("D=M");
+        printWriter.println("@SP");
+        printWriter.println("A=M");
+        printWriter.println("M=D");
+        printWriter.println("@SP");
+        printWriter.println("M=M+1");
+
+        printWriter.println("@THAT");
+        printWriter.println("D=M");
+        printWriter.println("@SP");
+        printWriter.println("A=M");
+        printWriter.println("M=D");
+        printWriter.println("@SP");
+        printWriter.println("M=M+1");
+
+        printWriter.println("@5");
+        printWriter.println("D=A");
+        printWriter.println("@"+numArgs);
+        printWriter.println("D=A+D");
+        printWriter.println("@SP");
+        printWriter.println("D=M-D");
+        printWriter.println("@ARG");
+        printWriter.println("M=D");
+
+        printWriter.println("@SP");
+        printWriter.println("D=M");
+        printWriter.println("@LCL");
+        printWriter.println("M=D");
+
+        printWriter.println("@"+functionName.substring(0,functionName.lastIndexOf('_')));
+        printWriter.println("0;JMP");
+        printWriter.println("(return_"+functionName+")");
+    }
     public void writeLabel(String label) {
         printWriter.println("(" + label + ")");
     }
 
-
     public void writeReturn() {
-        printWriter.println("(RETURN)");
+        printWriter.println("//return");
+        printWriter.println("@LCL");
+        printWriter.println("D=M");
+        printWriter.println("@R13");
+        printWriter.println("M=D");//Frame
+
+        printWriter.println("@R13");
+        printWriter.println("D=M");
+        printWriter.println("@5");
+        printWriter.println("A=D-A");
+        printWriter.println("D=M");
+        printWriter.println("@R14");
+        printWriter.println("M=D");//return address
+
+        printWriter.println("@SP");
+        printWriter.println("A=M-1");
+        printWriter.println("D=M");
+        printWriter.println("@ARG");
+        printWriter.println("A=M");
+        printWriter.println("M=D");
+
+        printWriter.println("@ARG");
+        printWriter.println("D=M+1");
+        printWriter.println("@SP");
+        printWriter.println("M=D");
+
+        printWriter.println("@R13");
+        printWriter.println("AM=M-1");
+        printWriter.println("D=M");
+        printWriter.println("@THAT");
+        printWriter.println("M=D");
+
+        printWriter.println("@R13");
+        printWriter.println("AM=M-1");
+        printWriter.println("D=M");
+        printWriter.println("@THIS");
+        printWriter.println("M=D");
+
+        printWriter.println("@R13");
+        printWriter.println("AM=M-1");
+        printWriter.println("D=M");
+        printWriter.println("@ARG");
+        printWriter.println("M=D");
+
+        printWriter.println("@R13");
+        printWriter.println("AM=M-1");
+        printWriter.println("D=M");
+        printWriter.println("@LCL");
+        printWriter.println("M=D");
+
+        printWriter.println("@R14");
+        printWriter.println("A=M");
+        printWriter.println("0;JMP");
     }
 
 
     public void writeFunction(String functionName,int numLocals) {
+        printWriter.println("//function");
         printWriter.println("(" +functionName + ")");
         printWriter.println("@"+numLocals);
         printWriter.println("D=A");
         printWriter.println("@R13");
         printWriter.println("M=D");
-        printWriter.println("("+functionName+"_loop_local)");
+
+        printWriter.println("("+functionName+"_loop)");
         printWriter.println("@R13");
-        printWriter.println("MD=M-1");
-        printWriter.println("@"+functionName+"_loop_local_end");
-        printWriter.println("D;JLT");
-        printWriter.println("@LCL");
+        printWriter.println("D=M");
+        printWriter.println("@"+functionName+"_loop_end");
+        printWriter.println("D;JEQ");
+
+        printWriter.println("@0");
+        printWriter.println("D=A");
+        printWriter.println("@SP");
         printWriter.println("A=M");
-        printWriter.println("M=0");
-        printWriter.println("@LCL");
-        printWriter.println("A=M-1");
-        printWriter.println("M=0");
-        printWriter.println("@"+functionName+"_loop_local");
+        printWriter.println("M=D");
+        printWriter.println("@SP");
+        printWriter.println("M=M+1");
+
+        printWriter.println("@R13");
+        printWriter.println("M=M-1");
+        printWriter.println("@"+functionName+"_loop");
         printWriter.println("0;JMP");
-        printWriter.println("("+functionName+"_loop_local_end)");
+        printWriter.println("("+functionName+"_loop_end)");
     }
 
 
